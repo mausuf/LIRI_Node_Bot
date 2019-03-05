@@ -90,11 +90,14 @@ function spotifyThisSong(song) {
     var spotify = new Spotify(keys.spotify);
     spotify.search({type: "track", query: song})
     .then(function(response){
+        if(response.tracks.total === 0 ) {
+            spotifyError();
+        }else {
             console.log("Artist: " + response.tracks.items[0].artists[0].name);
             console.log("Track: " + response.tracks.items[0].name);
             console.log("Preview URL: " + response.tracks.items[0].preview_url);
             console.log("Album: " + response.tracks.items[0].album.name);  
-            i = response.tracks.items.length;
+        }
     })
     .catch(function (error) {
         console.log(error);
@@ -102,9 +105,29 @@ function spotifyThisSong(song) {
     });
 };
 
+//spotifyError
+function spotifyError() {
+    var Spotify = require("node-spotify-api");
+    var spotify = new Spotify(keys.spotify);
+    spotify.search({type: "track", query: "The Sign"})
+    .then(function(response) {
+        for (var i=0;i < response.tracks.items.length; i++) {
+            if (response.tracks.items[i].artists[0].name === "Ace of Base") {
+                console.log("Artist: " + response.tracks.items[i].artists[0].name);
+                console.log("Track: " + response.tracks.items[i].name);
+                console.log("Preview URL: " + response.tracks.items[i].preview_url);
+                console.log("Album: " + response.tracks.items[i].album.name);
+                i = response.tracks.items.length;
+            }
+        }
+    }).catch(function (error) {  
+            console.log(error);
+            console.log("None found.");  
+    });
+};
+
 
 //doRandom
-
 function doRandom() {
     fs.readFile("random.txt", "utf8", function(error,data) {
         var dataArr = data.split(",");
