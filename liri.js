@@ -96,6 +96,10 @@ function spotifyThisSong(song) {
             console.log("Album: " + response.tracks.items[0].album.name);  
             i = response.tracks.items.length;
     })
+    .catch(function (error) {
+        console.log(error);
+        console.log("No results found.")
+    });
 };
 
 
