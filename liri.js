@@ -1,15 +1,19 @@
 //Required
 require("dotenv").config();
 var keys = require("./keys.js");
-// var spotify = new Spotify(keys.spotify);
+
 var fs = require("fs");
-var moment = require('moment');
+var moment = require("moment");
 var axios = require("axios");
 
 
 var spotifyTest = process.env.SPOTIFY_ID
 var command = process.argv[2]
 var searchTerm = process.argv[3]
+
+fs.appendFile("log.txt", command + ",", function(err){
+    if(err) throw err;
+});
 
 //Start js
 switch (command){
@@ -46,19 +50,6 @@ function searchForBandsInTown(artist) {
     ).catch(function (error) {
         console.log (error);
     });
-    }
-
-//spotifyThisSong
-function spotifyThisSong(song) {
-    spotify
-    .search({ type: 'track', query: song })
-    .then(function(response){
-        if (err) {
-            return console.log('Error occurred: ' + err);
-        } else {
-
-        };
-    });
 };
 
 
@@ -66,6 +57,7 @@ function spotifyThisSong(song) {
 function movieThis(movie) {
     axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&tomatoes=true&apikey=trilogy").then(
         function(response) {
+            // setTimeout();
             console.log(response.data);
             if (response.data.Title != undefined) {
                 console.log("Title: " + response.data.Title);
@@ -86,7 +78,38 @@ function movieThis(movie) {
         console.log(error);
         console.log("No Results found. ");
     });
-}
+    // setTimeout(() => {
+    //     startApp();
+    // }, 50000);
+};
+
+
+//spotifyThisSong
+function spotifyThisSong(song) {
+    var Spotify = require("node-spotify-api");
+    var spotify = new Spotify(keys.spotify);
+    spotify.search({type: "track", query: song})
+    .then(function(response){
+            console.log("Artist: " + response.tracks.items[0].artists[0].name);
+            console.log("Track: " + response.tracks.items[0].name);
+            console.log("Preview URL: " + response.tracks.items[0].preview_url);
+            console.log("Album: " + response.tracks.items[0].album.name);  
+            i = response.tracks.items.length;
+    })
+};
+
+
+//doRandom
+
+function doRandom() {
+    fs.readFile("random.txt", "utf8", function(error,data) {
+        var dataArr = data.split(",");
+        spotifyThisSong(dataArr[1]);
+        if (error);
+        console.log(error);
+    }
+)}
+
 
 
 //----------Notes-------------
